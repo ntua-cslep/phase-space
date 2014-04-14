@@ -1,0 +1,7 @@
+<launch>
+	<node name="phase_space_node" pkg="phase_space" type="phase_space_node">
+		<param name="ip" value="192.168.1.230" />
+		<param name="init_flags" value="0" />
+		<param name="marker_count" value="72" />
+	</node>
+</launch>
