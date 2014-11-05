@@ -1,13 +1,19 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(phase_space)
 
-
+set(CMAKE_CXX_FLAGS "-std=c++0x")
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED roscpp visualization_msgs std_msgs tf message_generation)
-#find_library(EIGEN REQUIRED)
+find_package(catkin REQUIRED 
+	roscpp 
+	visualization_msgs 
+	std_msgs 
+	geometry_msgs 
+	tf 
+	message_generation
+)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -25,21 +31,16 @@ find_package(catkin REQUIRED roscpp visualization_msgs std_msgs tf message_gener
 ## Generate messages in the 'msg' folder
  add_message_files(
  	FILES
-	AllMarkers.msg
+	PhaseSpaceMarker.msg
+	PhaseSpaceMarkerArray.msg
  )
-
-## Generate services in the 'srv' folder
-# add_service_files(
-#   FILES
-#   Service1.srv
-#   Service2.srv
-# )
 
 ## Generate added messages and services with any dependencies listed here
  generate_messages(
    DEPENDENCIES
-   visualization_msgs  # Or other packages containing msgs
- 	std_msgs
+   geometry_msgs
+   std_msgs
+   visualization_msgs
  )
 
 ###################################
@@ -52,7 +53,7 @@ find_package(catkin REQUIRED roscpp visualization_msgs std_msgs tf message_gener
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  #INCLUDE_DIRS include
+#  INCLUDE_DIRS include
 #  LIBRARIES phase_space
 #  CATKIN_DEPENDS other_catkin_pkg
 #  DEPENDS system_lib
@@ -64,25 +65,36 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(include ${EIGEN_INCLUDE_DIRS})
+include_directories(include)
+
+# for the precompiled libraries
 link_directories(lib)
 
-## Declare a cpp library
-# add_library(phase_space
-#   src/${PROJECT_NAME}/lib/src/phase_space.cpp
-# )
-
 ## Declare a cpp executable
-add_executable(phase_space_node src/phase_space_node.cpp)
+add_executable(phase_space_node 
+	src/phase_space_node.cpp
+)
+
+add_executable(phase_space_rviz_publisher 
+	src/phase_space_rviz_publisher.cpp
+)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-# add_dependencies(phase_space_node phase_space_generate_messages_cpp)
+add_dependencies(phase_space_node 
+	phase_space_generate_messages_cpp
+)
+add_dependencies(phase_space_rviz_publisher 
+	phase_space_generate_messages_cpp
+)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(phase_space_node
-   ${catkin_LIBRARIES}
-   owlsock
+	owlsock
+	${catkin_LIBRARIES} 
+)
+target_link_libraries(phase_space_rviz_publisher
+	${catkin_LIBRARIES} 
 )
 
 #############

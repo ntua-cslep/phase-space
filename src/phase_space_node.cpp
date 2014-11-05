@@ -1,18 +1,16 @@
-// use <> for system headers
+
+// standard headers
 #include <stdio.h>
 #include <vector>
+
 // ROS headers
 #include <ros/ros.h>
-#include <ros/message_operations.h>
-#include <visualization_msgs/MarkerArray.h>
-#include <tf/transform_listener.h>
-#include <tf/transform_broadcaster.h>
-#include <tf/transform_datatypes.h>
-//#include <rosbag/bag.h>
+//#include <ros/message_operations.h>
+#include <geometry_msgs/PointStamped.h>
 
-// use "" for local headers
+// local headers
 #include "owl.h"
-#include "phase_space/AllMarkers.h"
+#include "phase_space/PhaseSpaceMarkerArray.h"
 
 namespace phase_space {
 
@@ -20,12 +18,10 @@ class PhaseSpaceClient
 {
   public:
 
-    // suggested/quasi_mandatory members, note the member_name_ naming convention
-
     // the node handle
     ros::NodeHandle nh_;
 
-    // Node handle in the private namespace
+    // node handle in the private namespace
     ros::NodeHandle priv_nh_;
     
     // phase space related members
@@ -38,16 +34,8 @@ class PhaseSpaceClient
     // publishers
     ros::Publisher pub_phase_space_markers_;
 
-    ros::Publisher pub_Allmarkers_;
-
-    // the markers
-    visualization_msgs::MarkerArray phase_space_markers_;
-
-    // it is very useful to have a listener and broadcaster to know where all frames are
-    tf::TransformListener tf_listener_;
-    tf::TransformBroadcaster tf_broadcaster_;
-
-    
+    // the marker coordinates (visualization is handled by another node)
+    phase_space::PhaseSpaceMarkerArray phase_space_markers_;
 
   public:
 
@@ -75,7 +63,6 @@ class PhaseSpaceClient
             ROS_ERROR("error in owl initialization");
         }
 
-
         // create tracker 0
         tracker_ = 0;
         owlTrackeri(tracker_, OWL_CREATE, OWL_POINT_TRACKER);
@@ -100,42 +87,16 @@ class PhaseSpaceClient
         owlSetInteger(OWL_STREAMING, OWL_ENABLE);
 
         // advertise topics
-        pub_phase_space_markers_ = nh.advertise<visualization_msgs::MarkerArray>(nh.resolveName("/phase_space_markers"), 10);
+        pub_phase_space_markers_ = nh.advertise<phase_space::PhaseSpaceMarkerArray>(nh.resolveName("/phase_space_markers"), 10);
         
-        pub_Allmarkers_ = nh.advertise<AllMarkers>(nh.resolveName("/all_markers"), 10);
         //ros::Rate loop_rate(10);
     }
-    
-    // ROS marker initialization
-    void inizialize_markers(visualization_msgs::Marker&);
     
     //! Empty stub
     ~PhaseSpaceClient() {delete[] markers_;}
     //~PhaseSpaceClient() {}
 
 };
-
-void PhaseSpaceClient::inizialize_markers(visualization_msgs::Marker& marker)
-{
-     marker.header.frame_id = "/world";
-     marker.ns = "/phase_space";
-     marker.header.stamp = ros::Time::now();
-     marker.type = visualization_msgs::Marker::SPHERE;
-     marker.action = visualization_msgs::Marker::ADD;
-     marker.scale.x = 0.01;
-     marker.scale.y = 0.01;
-     marker.scale.z = 0.01;
-     marker.pose.orientation.x = 0.0;
-     marker.pose.orientation.y = 0.0;
-     marker.pose.orientation.z = 0.0;
-     marker.pose.orientation.w = 1.0;
-     marker.color.r = 1.0f;
-     marker.color.g = 0.0f;
-     marker.color.b = 0.0f;
-     marker.color.a = 1.0;
-     marker.lifetime = ros::Duration();
-
-}
 
 // this function is called as fast as ROS can from the main loop directly
 void PhaseSpaceClient::publishMarkers()
@@ -161,26 +122,28 @@ void PhaseSpaceClient::publishMarkers()
         for (int id = 0; id<n; id++)
         {
             if(markers_[id].cond > 0)
-            {   ROS_INFO("%i %f %f %f", n, 0.001*markers_[id].x, 0.001*markers_[id].y, 0.001*markers_[id].z);
-                visualization_msgs::Marker mark;
-                inizialize_markers(mark);
+            {   
+                ROS_DEBUG("%i %f %f %f", n, 0.001*markers_[id].x, 0.001*markers_[id].y, 0.001*markers_[id].z);
     
-                mark.pose.position.x = 0.001*markers_[id].x;
-                mark.pose.position.y = 0.001*markers_[id].y;
-                mark.pose.position.z = 0.001*markers_[id].z;
-                mark.id = id;
-                phase_space_markers_.markers.push_back(mark);
+                // phase space gives the coordinates in mm, but in ROS, everything is MKS, so let it be hard-coded.
+                // fill only the id and coordinates, the rviz marker is filled in the viz node.
+                phase_space::PhaseSpaceMarker marker;
+                marker.id = id;
+                marker.point.x = 0.001*markers_[id].x;
+                marker.point.y = 0.001*markers_[id].y;
+                marker.point.z = 0.001*markers_[id].z;
+                phase_space_markers_.markers.push_back(marker);
            
             } 
         }
    
-        AllMarkers appoMarker;
-        appoMarker.header=phase_space_markers_.markers[0].header;
-        appoMarker.LEDs=phase_space_markers_;
-        pub_Allmarkers_.publish(appoMarker);
+        phase_space_markers_.header.stamp = ros::Time::now();
+        phase_space_markers_.header.frame_id = "/phase_space_world";
         pub_phase_space_markers_.publish(phase_space_markers_);
 
     }
+
+    // empty the vector
     phase_space_markers_.markers.clear();
 }
 
