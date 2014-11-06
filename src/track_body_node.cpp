@@ -40,8 +40,7 @@ class PoseTracker
   	// data points, in local reference and measured ones
   	int Nleds_;
   	Eigen::MatrixXd local_points_;
-	Eigen::MatrixXd measured_points_;
-
+	
 	// the tracking filter
 	PoseTrackingFilter filter_;
 
@@ -126,14 +125,14 @@ void PoseTracker::parseParameters(const XmlRpc::XmlRpcValue &leds)
     	}
     	else
 		{
-			ROS_ERROR("No id value for the current led. Check the yaml configuration for this object");
+			ROS_ERROR("No double value for the position current led. Check the yaml configuration for this object, remember to use . dots to ensure double format");
 			return;
 		}
 		
 	}
 
 	ROS_INFO("Succesfully parsed all LED parameters!");
-	//std::cout << local_points_ << std::endl;
+	// std::cout << local_points_ << std::endl;
 
 	return;
 }
@@ -142,11 +141,10 @@ void PoseTracker::estimatePose(const phase_space::PhaseSpaceMarkerArray & msg)
 {	
 	// measured points is (at most) equal to the number of leds in the model
 	// 4 =  id + 3Dposition
-    measured_points_.resize(1, 3);
+    std::vector<Eigen::Vector3d> measured_points;
 
     // found leds are copied here
-    Eigen::MatrixXd found_points;
-    found_points.resize(1, 3) ;
+    std::vector<Eigen::Vector3d> found_points;
     int counter = 0;
 
 	// apply match criteria (the led id) in order to provide the 
@@ -155,29 +153,28 @@ void PoseTracker::estimatePose(const phase_space::PhaseSpaceMarkerArray & msg)
 	// is there any other way to do this? 
 	for (int i = 0; i < Nleds_; ++i)
 	{
-		for(int j = 0; j < msg.markers.size(); ++i)
+		for(size_t j = 0; j < msg.markers.size(); ++j)
 		{
 			// criteria, there should be only one match per i iteration
 			if(local_points_(i,0) == msg.markers[j].id)
 			{
-				measured_points_(counter,0) = msg.markers[j].point.x;
-				measured_points_(counter,1) = msg.markers[j].point.y;
-				measured_points_(counter,2) = msg.markers[j].point.z;
-				found_points(counter,0) = local_points_(i,1);
-				found_points(counter,1) = local_points_(i,2);
-				found_points(counter,2) = local_points_(i,3);
+				measured_points.push_back( Eigen::Vector3d(msg.markers[j].point.x, msg.markers[j].point.y, msg.markers[j].point.z).transpose() );
+				found_points.push_back( Eigen::Vector3d(local_points_(i,1), local_points_(i,2), local_points_(i,3)).transpose() );
 				counter++;
-
-				measured_points_.conservativeResize(counter+1, Eigen::NoChange_t());
-				found_points.conservativeResize(counter+1, Eigen::NoChange_t());
 			}
 		}
 	}
 
-	Eigen::MatrixXd startP = found_points;
+	Eigen::MatrixXd startP, finalP;
+	startP.resize(counter, 3);
+	finalP.resize(counter, 3);
 
-	Eigen::MatrixXd finalP = measured_points_;
-	
+	for(int i = 0; i < counter; ++i)
+	{
+		startP.row(i) = found_points[i];
+		finalP.row(i) = measured_points[i];
+	}
+
 	if (filter_.isInitialized() == 0)
 	{	
 		filter_.initialize(1);

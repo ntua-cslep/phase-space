@@ -5,7 +5,7 @@
 
   <macro name="star" params="name parent color">
   
-    <joint name="${parent}_${name}_base_joint" type="floating">
+    <joint name="${parent}_${name}_joint" type="floating">
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <parent link="${parent}"/>
       <child link="${name}"/>

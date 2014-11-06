@@ -45,7 +45,7 @@ class PhaseSpaceViz
 
         // initialize the RVIZ markers
         // the leds
-        rviz_marker_.ns = "/phase_space";
+        rviz_marker_.ns = "/phase_space/markers";
         rviz_marker_.type = visualization_msgs::Marker::SPHERE;
         rviz_marker_.action = visualization_msgs::Marker::ADD;
         rviz_marker_.scale.x = 0.01;
@@ -62,10 +62,14 @@ class PhaseSpaceViz
         rviz_marker_.lifetime = ros::Duration();
         
         // and its id
-        id_marker_.ns = "/phase_space";
+        id_marker_.ns = "/phase_space/id";
         id_marker_.type = visualization_msgs::Marker::TEXT_VIEW_FACING;
         id_marker_.action = visualization_msgs::Marker::ADD;
-        id_marker_.scale.z = 0.01;
+        id_marker_.color.r = 1.0f;
+        id_marker_.color.g = 1.0f;
+        id_marker_.color.b = 1.0f;
+        id_marker_.color.a = 1.0;
+        id_marker_.scale.z = 0.03;
         
         // advertise topics
         pub_rviz_markers_ = nh.advertise<visualization_msgs::MarkerArray>(nh.resolveName("/rviz_markers"), 10);
@@ -92,6 +96,7 @@ void PhaseSpaceViz::publishRVIZMarkers(const phase_space::PhaseSpaceMarkerArray&
         // fill the led id
         id_marker_.header = array.header;
         id_marker_.text = std::to_string(array.markers[i].id);
+        id_marker_.id = array.markers[i].id;
         id_marker_.pose.position = array.markers[i].point;
 
         rviz_markers_.markers.push_back(rviz_marker_);

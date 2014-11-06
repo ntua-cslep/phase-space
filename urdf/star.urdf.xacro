@@ -5,7 +5,7 @@
   
   <link name="phase_space_world"/>
 
-  <xacro:star name="star" parent="phase_space_world" color="PhaseSpace/SickBlue">
+  <xacro:star name="star_frame" parent="phase_space_world" color="PhaseSpace/SickBlue">
   </xacro:star>
 
 </robot>

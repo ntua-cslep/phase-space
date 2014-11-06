@@ -56,7 +56,7 @@ class PhaseSpaceClient
         
         priv_nh_.param<int>("marker_count", marker_count_, 72);
 
-        markers_=new OWLMarker[marker_count_];
+        markers_ = new OWLMarker[marker_count_];
 
         if(owlInit(ip, init_flags_) < 0)
         {
