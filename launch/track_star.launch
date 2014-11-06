@@ -1,0 +1,34 @@
+<launch>
+  
+  <!-- decide wether to visualize the object or not -->
+  <arg name="turn_rviz_on" default="True" />
+
+  <!-- Write the object name -->
+  <arg name="object" default="star" />
+
+  <rosparam command="load" file="$(find phase_space)/config/$(arg object).yaml" />
+
+  <node name="track_$(arg object)" pkg="phase_space" type="track_body_node" output="screen">
+    <param name="reference_frame" value="/phase_space_world" />
+    <param name="object_frame" value="/star_link"/>
+  </node>
+
+  <group if="$(arg turn_rviz_on)">
+
+    <!-- load the urdf file of your object -->
+    <arg name="model" default="$(find phase_space)/urdf/$(arg object).urdf.xacro"/>
+    <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
+  
+    <!-- Enable needed topics -->
+    <node name="$(arg object)_robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+
+  	<!-- load a customized rviz -->
+		<node name="$(anon rviz)" launch-prefix="" pkg="rviz" type="rviz" respawn="false" args="-d $(find phase_space)/launch/rviz.rviz" output="screen"/>
+	</group>
+
+  <!-- and launch the phase space client -->
+  <include file="$(find phase_space)/launch/phase_space.launch">
+    <arg name="turn_rviz_on" value="False" />
+  </include>
+
+</launch>

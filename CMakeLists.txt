@@ -13,10 +13,11 @@ find_package(catkin REQUIRED
 	geometry_msgs 
 	tf 
 	message_generation
+	cmake_modules
 )
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+find_package(Eigen REQUIRED)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -65,10 +66,17 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(include)
+include_directories(include
+	${catkin_INCLUDE_DIRS}
+	${Eigen_INCLUDE_DIRS}
+)
 
 # for the precompiled libraries
 link_directories(lib)
+
+add_library(pose_tracking_filter
+	src/PoseTrackingFilter.cpp
+)
 
 ## Declare a cpp executable
 add_executable(phase_space_node 
@@ -79,13 +87,22 @@ add_executable(phase_space_rviz_publisher
 	src/phase_space_rviz_publisher.cpp
 )
 
+add_executable(track_body_node 
+	src/track_body_node.cpp
+)
+
+
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
-add_dependencies(phase_space_node 
+add_dependencies(phase_space_node
 	phase_space_generate_messages_cpp
 )
-add_dependencies(phase_space_rviz_publisher 
+add_dependencies(phase_space_rviz_publisher
 	phase_space_generate_messages_cpp
+)
+add_dependencies(track_body_node
+	phase_space_generate_messages_cpp
+	pose_tracking_filter
 )
 
 ## Specify libraries to link a library or executable target against
@@ -94,6 +111,10 @@ target_link_libraries(phase_space_node
 	${catkin_LIBRARIES} 
 )
 target_link_libraries(phase_space_rviz_publisher
+	${catkin_LIBRARIES} 
+)
+target_link_libraries(track_body_node
+	pose_tracking_filter
 	${catkin_LIBRARIES} 
 )
 
