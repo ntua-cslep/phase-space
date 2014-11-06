@@ -1,4 +1,3 @@
-
 // standard headers
 #include <fstream>
 #include <iostream>
