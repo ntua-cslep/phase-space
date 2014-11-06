@@ -22,24 +22,35 @@ you should use the calibration wand!  (http://www.phasespace.com/)
 define the origin and axises. 
 
 
-Using marker info only
-----------------------
+Marker info and visualization only
+----------------------------------
 
 Run the command below in your computer (you can set inside the launch file to turn on visualization or not, visualization can be run in a different computer now): 
 
 `roslaunch phase_space phase_space.launch`
 
 
-Tracking bodies
----------------
+Tracking bodies with known-positioned leds
+------------------------------------------
 
-Requisites: 
-- The leds id and location in the reference system of the object (see inside `config` for examples, a CAD tool is advised if the object model is available, and DOUBLE CHECK! the correspondence id-coordinates)
-- An STL model of the object (only for online visualization) into the urdf/mesh folder
-- The macro and urdf file of your object: urdf/macro/{object_name}.urdf (the macro definition) and urdf/{object_name}.urdf.xacro (the world that instantiate the macro)
+You need to:
+- Write an OBJECT.YAML configuration file in the `config` folder with the leds id and local coordinates of them. A CAD tool is advised if the object model is available, and DOUBLE CHECK! the correspondence id-coordinates using the master tool in the phasepace).
+- Provide an OBJECT.STL model (only for online visualization), and place it in the `urdf/mesh` folder
+- Edit `track_object.launch`, specifically the line `<arg name="object" default="OBJECT" />`
 
-This node will publish the object pose w.r.t. the phase space world.
+IMPORTANT: note that OBJECT is repeated in the three cases.
+
+Finally, run:
+
+`roslaunch phase_space track_object.launch`
+
+ToDo: write procedure to track multiple objects
 
 
+Tracking bodies using the star
+------------------------------
 
+This requires a calibration procedure in order to known the transformation between the star and the object. The example will be the cup.
+
+ToDo: the calibration procedure, it will require object pose estimation, and kinect-phase_space calibration
 

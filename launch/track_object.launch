@@ -1,23 +1,25 @@
 <launch>
-  
+
+  <!-- select the object by name -->
+  <arg name="object" default="star" />
+
   <!-- decide wether to visualize the object or not -->
   <arg name="turn_rviz_on" default="True" />
 
-  <!-- Write the object name -->
-  <arg name="object" default="star" />
+  <!-- DO NOT EDIT BELOW, EVERYTHING IS HANDLED AUTOMATICALLY IF YOU FOLLOW THE INSTRUCTIONS GIVEN IN THE READMEN -->
 
   <rosparam command="load" file="$(find phase_space)/config/$(arg object).yaml" />
 
   <node name="track_$(arg object)" pkg="phase_space" type="track_body_node" output="screen">
     <param name="reference_frame" value="/phase_space_world" />
-    <param name="object_frame" value="/star_frame"/>
+    <param name="object_frame" value="/$(arg object)"/>
   </node>
 
   <group if="$(arg turn_rviz_on)">
 
     <!-- load the urdf file of your object -->
-    <arg name="model" default="$(find phase_space)/urdf/$(arg object).urdf.xacro"/>
-    <param name="robot_description" command="$(find xacro)/xacro.py $(arg model)" />
+    <arg name="model" default="$(find phase_space)/urdf/object.urdf.xacro"/>
+    <param name="robot_description" command="$(find xacro)/xacro.py $(arg model) object:=$(arg object)"/>
 
 	</group>
 
