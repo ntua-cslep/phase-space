@@ -14,7 +14,7 @@
     <link name="${name}">
       <visual>
         <geometry>
-         <mesh filename="package://phase_space/urdf/mesh/star.stl"/>
+         <mesh filename="package://phase_space/urdf/mesh/${name}.stl"/>
         </geometry>
         <material name="${color}" />
       </visual>
