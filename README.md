@@ -1,4 +1,4 @@
-Phase-space ROS package
+Phase-Space ROS package
 =======================
 
 Software related to the use of the Phase Space motion tracking.
@@ -9,7 +9,7 @@ Software related to the use of the Phase Space motion tracking.
 
 `password:demo`
 
-`: startx`
+`startx`
 
 2. Calibrate the phase space system
 
