@@ -15,13 +15,13 @@
     <param name="object_frame" value="/$(arg object)"/>
   </node>
 
-  <group if="$(arg turn_rviz_on)">
+  <group ns="$(arg object)" if="$(arg turn_rviz_on)">
 
     <!-- load the urdf file of your object -->
     <arg name="model" default="$(find phase_space)/urdf/object.urdf.xacro"/>
     <param name="robot_description" command="$(find xacro)/xacro.py $(arg model) object:=$(arg object)"/>
 
-	</group>
+  </group>
 
   <!-- and launch the phase space client -->
   <include file="$(find phase_space)/launch/phase_space.launch">
