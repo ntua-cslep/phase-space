@@ -1,11 +1,11 @@
 leds:
-  - id: 4
+  - id: 45
     position: [-0.0300, 0.0, 0.0]
-  - id: 6
+  - id: 44
     position: [0.0, -0.030, 0.0]
-  - id: 8
+  - id: 42
     position: [0.0, 0.030, 0.0]
-  - id: 9
+  - id: 40
     position: [0.030, 0.0, 0.0]
-  - id: 11
+  - id: 47
     position: [0.0, 0.0, -0.015]
