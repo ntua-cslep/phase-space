@@ -15,6 +15,7 @@
 // local headers
 #include "PoseTrackingFilter.h"
 #include "phase_space/PhaseSpaceMarkerArray.h"
+#include "phase_space/Transform.h"
 
 namespace phase_space {
 
@@ -29,6 +30,9 @@ class PoseTracker
 
     // subscribers
     ros::Subscriber sub_phase_space_markers_;
+
+    //publisher
+	ros::Publisher pub_transform_;
 
     tf::TransformListener tf_listener_;
     tf::TransformBroadcaster tf_broadcaster_;
@@ -62,7 +66,6 @@ class PoseTracker
     // constructor
     PoseTracker(ros::NodeHandle nh, int argc,char** argv) : nh_(nh), priv_nh_("~"), filter_()
     {
-        //priv_nh_.param<std::string>("cad_file", cad_file_path_, "");
         priv_nh_.param<std::string>("reference_frame", reference_frame_, "");
         priv_nh_.param<std::string>("object_frame", object_frame_, "");
 
@@ -74,6 +77,9 @@ class PoseTracker
     	
     	// initialize subscriber
         sub_phase_space_markers_ = nh_.subscribe(nh_.resolveName("/phase_space_markers"), 10, &PoseTracker::estimatePose,this);
+    
+    	string tansform_name =reference_frame_+"_to_"+object_frame_;
+        pub_transform_= nh.advertise<phase_space::Transform>(nh.resolveName(tansform_name.c_str()), 10);
     }
 
     //! Empty stub
@@ -192,6 +198,14 @@ void PoseTracker::estimatePose(const phase_space::PhaseSpaceMarkerArray & msg)
 	pose.setOrigin( tf::Vector3(transfParameters_(0),transfParameters_(1),transfParameters_(2)));
    	pose.setRotation( tf::Quaternion(transfParameters_(3),transfParameters_(4),transfParameters_(5),transfParameters_(6)));
 	tf_broadcaster_.sendTransform(tf::StampedTransform(pose, ros::Time::now(), reference_frame_.c_str(), object_frame_.c_str()));
+
+	Transform msg_t;
+
+	msg_t.header.stamp = ros::Time::now();
+
+    tf::transformTFToMsg(pose,msg_t.Transf);
+	pub_transform_.publish(msg_t);
+
  
 }
 
