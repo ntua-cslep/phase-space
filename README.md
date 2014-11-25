@@ -34,7 +34,7 @@ Tracking bodies with known-positioned leds
 ------------------------------------------
 
 You need to:
-- Write an OBJECT.YAML configuration file in the `config` folder with the leds id and local coordinates of them. A CAD tool is advised if the object model is available, and DOUBLE CHECK! the correspondence id-coordinates using the master tool in the phasepace).
+- Write an OBJECT.YAML configuration file in the `config` folder with the leds id and local coordinates of them, and NOTE the `OBJECT_leds:` at the top. A CAD tool is advised if the object model is available, and DOUBLE CHECK! the correspondence id-coordinates using the master tool in the phasepace.
 - Provide an OBJECT.STL model (only for online visualization), and place it in the `urdf/mesh` folder
 - Edit `track_object.launch`, specifically the line `<arg name="object" default="OBJECT" />`
 
