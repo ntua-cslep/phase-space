@@ -1,0 +1,9 @@
+hand_leds:
+  - id: 57
+    position: [0, 0, -0.0150]
+  - id: 58
+    position: [0, 0.03, 0]
+  - id: 56
+    position: [-0.03, 0, 0]
+  - id: 59
+    position: [0.03, 0, 0]

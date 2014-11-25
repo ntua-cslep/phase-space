@@ -1,4 +1,4 @@
-leds:
+bracelet_leds:
   - id: 9
     position: [0.0, 0.065, 0.067]
   - id: 11

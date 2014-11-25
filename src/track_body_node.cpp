@@ -9,13 +9,13 @@
 #include <tf/transform_listener.h>
 #include <tf/transform_datatypes.h>
 #include <std_msgs/String.h>
+#include <geometry_msgs/TransformStamped.h>
 
 #include <Eigen/Eigen>
 
 // local headers
 #include "PoseTrackingFilter.h"
 #include "phase_space/PhaseSpaceMarkerArray.h"
-#include "phase_space/Transform.h"
 
 namespace phase_space {
 
@@ -70,7 +70,7 @@ class PoseTracker
         priv_nh_.param<std::string>("object_frame", object_frame_, "");
 
         // get the led location in local frame from ros param server
-        nh_.getParam("leds", leds_);
+        nh_.getParam(object_frame_ + std::string("_leds"), leds_);
 		parseParameters(leds_);
 
     	transfParameters_.resize(7);
@@ -79,7 +79,7 @@ class PoseTracker
         sub_phase_space_markers_ = nh_.subscribe(nh_.resolveName("/phase_space_markers"), 10, &PoseTracker::estimatePose,this);
     
     	string tansform_name =reference_frame_+"_to_"+object_frame_;
-        pub_transform_= nh.advertise<phase_space::Transform>(nh.resolveName(tansform_name.c_str()), 10);
+        pub_transform_= nh.advertise<geometry_msgs::TransformStamped>(nh.resolveName(tansform_name.c_str()), 10);
     }
 
     //! Empty stub
@@ -199,11 +199,10 @@ void PoseTracker::estimatePose(const phase_space::PhaseSpaceMarkerArray & msg)
    	pose.setRotation( tf::Quaternion(transfParameters_(3),transfParameters_(4),transfParameters_(5),transfParameters_(6)));
 	tf_broadcaster_.sendTransform(tf::StampedTransform(pose, ros::Time::now(), reference_frame_.c_str(), object_frame_.c_str()));
 
-	Transform msg_t;
+	geometry_msgs::TransformStamped msg_t;
 
 	msg_t.header.stamp = ros::Time::now();
-
-    tf::transformTFToMsg(pose,msg_t.Transf);
+	tf::transformTFToMsg(pose,msg_t.transform);
 	pub_transform_.publish(msg_t);
 
  

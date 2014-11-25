@@ -1,4 +1,4 @@
-leds:
+thimble_leds:
   - id: 22
     position: [-0.0186870, 0.00871388, 0.00825649]
   - id: 21
