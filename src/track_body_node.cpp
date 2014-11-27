@@ -100,26 +100,26 @@ void PoseTracker::parseParameters(const XmlRpc::XmlRpcValue &leds)
 
 	for( int i = 0; i < Nleds_; ++i)
 	{
-		XmlRpc::XmlRpcValue current_led = leds_[i];
+		XmlRpc::XmlRpcValue current_led = leds[i];
 
 		// parse ID
 		ROS_ASSERT(current_led.getType() == XmlRpc::XmlRpcValue::TypeStruct);
-    	if( current_led.hasMember("id") )
-    	{
-    		ROS_ASSERT(current_led["id"].getType() == XmlRpc::XmlRpcValue::TypeInt);
-    		int id = current_led["id"];
-    		local_points_(i, 0) = (double) id;
-    	}
-    	else
-    	{
-    		ROS_ERROR("No id value for the current led. Check the yaml configuration for this object");
-    		return;
-    	}
+    		if( current_led.hasMember("id") )
+    		{
+    			ROS_ASSERT(current_led["id"].getType() == XmlRpc::XmlRpcValue::TypeInt);
+    			int id = current_led["id"];
+    			local_points_(i, 0) = (double) id;
+    		}
+    		else
+    		{
+    			ROS_ERROR("No id value for the current led. Check the yaml configuration for this object");
+    			return;
+    		}
 
-    	// parse position
-    	std::vector<double> position;
-    	if( current_led.hasMember("position") )
-    	{
+	    	// parse position
+	    	std::vector<double> position;
+	    	if( current_led.hasMember("position") )
+	    	{
 			for (int j = 0; j < current_led["position"].size(); ++j) 
 			{
 				ROS_ASSERT(current_led["position"][j].getType() == XmlRpc::XmlRpcValue::TypeDouble);
@@ -128,13 +128,12 @@ void PoseTracker::parseParameters(const XmlRpc::XmlRpcValue &leds)
 			local_points_(i, 1) = position[0];
 			local_points_(i, 2) = position[1];
 			local_points_(i, 3) = position[2];
-    	}
-    	else
+	    	}
+    		else
 		{
 			ROS_ERROR("No double value for the position current led. Check the yaml configuration for this object, remember to use . dots to ensure double format");
 			return;
 		}
-		
 	}
 
 	ROS_INFO("Succesfully parsed all LED parameters!");
