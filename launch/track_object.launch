@@ -17,7 +17,7 @@
     <param name="object_frame" value="/$(arg object)"/>
   </node>
 
-  <group ns="$(arg object)" if="$(arg turn_rviz_on)">
+  <group ns="$(arg object)">
 
     <!-- load the urdf file of your object -->
     <arg name="model" default="$(find phase_space)/urdf/object.urdf.xacro"/>
