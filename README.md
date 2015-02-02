@@ -44,6 +44,8 @@ Finally, run:
 
 `roslaunch phase_space track_object.launch`
 
+An Rviz window should open with almost everything configured, you just need to update the robot model display with the parameter: `/OBJECT/robot_description`.
+
 ToDo: write procedure to track multiple objects
 
 
