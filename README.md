@@ -46,7 +46,7 @@ Finally, run:
 
 An Rviz window should open with almost everything configured, you just need to update the robot model display with the parameter: `/OBJECT/robot_description`.
 
-ToDo: write procedure to track multiple objects
+To track multiple objects, include `track_object_launch` within a group with a namespace and fill the arguments properly for each object you want to track.
 
 
 Tracking bodies using the star
