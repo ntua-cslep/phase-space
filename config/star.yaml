@@ -1,13 +1,13 @@
 star_leds:
-  - id: 45
+  - id: 11
     position: [-0.0300, 0.0, 0.0]
-  - id: 44
+  - id: 10
     position: [0.0, -0.030, 0.0]
-  - id: 42
+  - id: 9
     position: [0.0, 0.030, 0.0]
-  - id: 40
+  - id: 8
     position: [0.030, 0.0, 0.0]
-  - id: 47
+  - id: 7
     position: [0.0, 0.0, -0.015]
 
 
