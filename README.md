@@ -15,6 +15,8 @@ Software related to the use of the Phase Space motion tracking.
 
 3. Follow the instructions on the window, at somepoint it will ask you to connect the calibration wand, so look for it.
 
+There is a [guide](doc/guida_PS.pdf) written in italian if you want to know more details.
+
 ## Marker info and visualization only
 
 Run the command below in your computer (you can set inside the launch file to turn on visualization or not, visualization can be run in a different computer now): 
