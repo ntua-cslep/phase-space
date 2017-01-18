@@ -5,8 +5,8 @@ Software related to the use of the Phase Space motion tracking.
 ## How to start the system
 
 1. Turn on the phase-space system and login as:
-`username: demo`
-`password:demo`
+`username: root`
+`password:free!`
 `startx`
 
 2. Calibrate the phase space system, open a terminal and type
