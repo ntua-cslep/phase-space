@@ -129,9 +129,12 @@ void PhaseSpaceClient::publishMarkers()
                 // fill only the id and coordinates, the rviz marker is filled in the viz node.
                 phase_space::PhaseSpaceMarker marker;
                 marker.id = id;
+
+/* IMPORTANT THE FOLLOWING 3 LINES HAS BEEN MODIFIED FOR CSL SPACE CONVINIENCE */
+
                 marker.point.x = 0.001*markers_[id].x;
-                marker.point.y = 0.001*markers_[id].y;
-                marker.point.z = 0.001*markers_[id].z;
+                marker.point.y = -0.001*markers_[id].z; 
+                marker.point.z = 0.001*markers_[id].y;
                 phase_space_markers_.markers.push_back(marker);
            
             } 
