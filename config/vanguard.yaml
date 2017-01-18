@@ -1,0 +1,9 @@
+vanguard_leds:
+  - id: 6
+    position: [ 0.217, -0.152, 0.045]
+  - id: 7
+    position: [ 0.217,  0.152, 0.045]
+  - id: 8
+    position: [-0.217,  0.118, 0.040]
+  - id: 9
+    position: [-0.217, -0.118, 0.067]
