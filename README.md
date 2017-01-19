@@ -5,10 +5,7 @@ Software related to the use of the Phase Space motion tracking.
 ## How to start the system
 
 1. Turn on the phase-space system, login running the following comands and start graphics:
-
-*`username: root`
-*`password:free!`
-*`startx`
+	`username: root`, `password:free!`, `startx`
 
 2. Calibrate the phase space system, open a terminal and type
 Select the calipers symbol and select calibration
